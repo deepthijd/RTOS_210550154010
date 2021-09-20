@@ -1,0 +1,73 @@
+#include<stdio.h>
+#include "freertos/FreeRTOS.h"
+#inlude "freertos/task.h"
+#include "freertos/queue.h"
+
+TaskHandle_t location_handler;
+TaskHandle_t mqtt_handler;
+
+void pressure_task(void *data)
+{
+    while(1)
+    {
+
+    printf("Pressure started\n");
+
+    printf("pressure ended\n");
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+}
+
+void app_main(void)
+{
+    int i=0;
+    xTaskCreate(pressure_task, "press_tsk",128,NULL,3,NULL);
+    while(1)
+    {
+        printf("[%d] Hello world!\n,i);
+        i++;
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        }
+}
+
+void app_main(void)
+{
+    int i=0;
+    xTaskCreate(pressure_task,"press_tsk",128,NULL,3,NULL);
+    while(1)
+    {
+        printf("[%d] Hello world!\n,i);
+        i++;
+        vTaskDelay(5000 / PortTICk_PERIOD_MS);
+
+    }
+}
+
+void location_task(void *data)
+{
+int lat=0;
+
+    while(1)
+    {
+        printf("Location started = %d\n",portTICK_PERIOD_MS);
+        lat++;
+        xQueueSend(locmq,&lat,0);
+        printf("Location ended\n");
+        vTaskDelay(1000 /portTICK_PERIOD_MS);
+              
+    }
+}
+void mqtt_task(void *data)
+{
+  int buff;
+    while(1)
+    {
+        printf("MQTT started = %d\n",portTICK_PERIOD_MS); 
+        xQueueReceive(locmq,&buff,0);
+
+       printf("MQTT:buff(lat):%d\n",buff);
+        printf("MQTT ended\n");
+        vTaskDelay(10000 / portTICK_PERIOD_MS);
+        
+    }
+}
